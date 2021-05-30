@@ -39,7 +39,8 @@ public:
     void fillMatrixWith(int);
     void setVal(int row, int col, int val); //Method to set the val of [i,j]th-entry
     void printMatrix(); //Method to display the matrix
-    Macierz2D operator+(const Macierz2D& wektor1, int liczba)
+ 
+    Macierz2D operator/(int liczba)
     {
         if (liczba != 0) {
             for (int i = 0; i < nRows; i++)
@@ -49,8 +50,51 @@ public:
                     m_dane[i][j] = (m_dane[i][j]) / liczba;
                 }
             }
+            return *this;
         }
-        
+        return 0;
+
+    }
+    Macierz2D operator-(int liczba)
+    {
+        if (liczba != 0) {
+            for (int i = 0; i < nRows; i++)
+            {
+                for (int j = 0; j < nCols; j++)
+                {
+                    m_dane[i][j] = (m_dane[i][j]) - liczba;
+                }
+            }
+            return *this;
+        }
+
+    }
+    Macierz2D operator+(int liczba)
+    {
+        if (liczba != 0) {
+            for (int i = 0; i < nRows; i++)
+            {
+                for (int j = 0; j < nCols; j++)
+                {
+                    m_dane[i][j] = (m_dane[i][j]) + liczba;
+                }
+            }
+            return *this;
+        }
+
+    }
+    Macierz2D operator*(int liczba)
+    {
+            for (int i = 0; i < nRows; i++)
+            {
+                for (int j = 0; j < nCols; j++)
+                {
+                    m_dane[i][j] = (m_dane[i][j]) * liczba;
+                }
+            }
+            return *this;
+       
+
     }
 
 private:
@@ -92,16 +136,7 @@ Macierz2D::Macierz2D(int a, int b, int c, int d, int e, int f, int g, int h, int
 
 }
 
-//Main construcor
-Macierz2D::Macierz2D(int param)
-{   
-    m_dane = new float* [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new float[nCols];
-    }
 
-    fillMatrixWith(param);
-}
 
 
 Macierz2D::Macierz2D(int param)
@@ -129,7 +164,16 @@ Macierz2D::Macierz2D(float** param)
 
     
 }
+void Macierz2D::printMatrix() {
+    for (int i = 0; i < nRows; i++)
+    {
+        for (int j = 0; j < nCols; j++)
+        {
+            std::cout << m_dane[i][j]+" ";
+        }
+    }
 
+}
 void Macierz2D::fillMatrixWith(int x) {
     for (int i = 0; i < nRows; i++) {
         for (int w = 0; w < nCols; w++) {
@@ -142,5 +186,7 @@ void Macierz2D::fillMatrixWith(int x) {
 }
 int main()
 {
-    std::cout << "Hello Wddorld!\n";
+    Macierz2D* x = new Macierz2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    *x + 4;
+    x->printMatrix();
 }
