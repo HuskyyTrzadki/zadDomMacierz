@@ -35,9 +35,12 @@ public:
     Macierz2D(int); //Main constructor
     Macierz2D(float**);
     Macierz2D(float&);//adres zmiennje
+    Macierz2D(Macierz2D&);
     Macierz2D(int, int, int, int, int, int, int, int, int);
-    void setNumberAt(int, int, int);
+    void setNumberAt(int, int, float);
     int getNumberAt(int, int);
+    void makeMatrixIdentity();
+    float getDet();
 
     
     void fillMatrixWith(int);
@@ -100,12 +103,12 @@ public:
 
 
     }
-    Matrix2D operator +(const Matrix2D m) const
-    {
-        return Matrix2D(this->data[0][0] + m.data[0][0], this->data[0][1] + m.data[0][1], this->data[0][2] + m.data[0][2],
-            this->data[1][0] + m.data[1][0], this->data[1][1] + m.data[1][1], this->data[1][2] + m.data[1][2],
-            this->data[2][0] + m.data[2][0], this->data[2][1] + m.data[2][1], this->data[2][2] + m.data[2][2]);
+    Macierz2D operator+(Macierz2D macierz){
+        return Macierz2D(macierz[0][0] + m_dane[0][0], macierz[0][1] + m_dane[0][1], macierz[0][2] + m_dane[0][2],
+            macierz[1][0] + m_dane[1][0], macierz[1][1] + m_dane[1][1], macierz[1][2] + m_dane[1][2],
+            macierz[2][0] + m_dane[2][0], macierz[2][1] + m_dane[2][1], macierz[2][2] + m_dane[2][2]);
     }
+
     Macierz2D operator+=(Macierz2D& x) {
         for (int i = 0; i < nRows; i++)
         {
@@ -182,6 +185,44 @@ public:
 
         return *this;
     }
+    Macierz2D operator*(Macierz2D& macierz)
+    {
+        Macierz2D *res = new Macierz2D(0);
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    res->m_dane[i][g] += m_dane[i][k] * m_dane[k][g];
+                }
+            }
+        }
+
+        return *res;
+    }
+    Macierz2D operator*=(Macierz2D& macierz)
+    {
+        fillMatrixWith(0);
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    m_dane[i][g] += m_dane[i][k] * m_dane[k][g];
+                }
+            }
+        }
+
+        return *this;
+    }
+    std::ostream& operator <<(std::ostream& output,Macierz2D& macierz)
+    {
+        output<<printMatrix();
+
+        return output;
+    }
 
 private:
     float** m_dane;
@@ -223,8 +264,17 @@ Macierz2D::Macierz2D(int a, int b, int c, int d, int e, int f, int g, int h, int
 }
 
 
-
-
+Macierz2D::Macierz2D(Macierz2D& macierz)
+{
+    Macierz2D *nowa = new Macierz2D(0);
+    for (int i = 0; i < nRows; i++)
+    {
+        for (int g = 0; g < nCols; g++)
+        {
+            nowa->m_dane[i][g] = macierz.m_dane[i][g];
+        }
+    }
+}
 Macierz2D::Macierz2D(int param)
 {
     m_dane = new float* [nRows];
@@ -250,16 +300,23 @@ Macierz2D::Macierz2D(float** param)
 
     
 }
+float Macierz2D::getDet(){
+   
+    float det = m_dane[0][2] * m_dane[1][1] * m_dane[2][0] + m_dane[0][0] * m_dane[1][2] * m_dane[2][1] + m_dane[0][1] * m_dane[1][0] * m_dane[2][2];
+    return det;
+}
 void Macierz2D::printMatrix() {
     for (int i = 0; i < nRows; i++)
     {
         for (int j = 0; j < nCols; j++)
         {
-            std::cout << m_dane[i][j];
+            std::cout << m_dane[i][j]<<" ";
         }
+        std::cout <<std:: endl;
     }
 
 }
+
 void Macierz2D::setNumberAt(int r, int c, float num)
 {
     m_dane[r][c] = num;
@@ -277,6 +334,20 @@ void Macierz2D::fillMatrixWith(int x) {
     
     }
 
+}
+void Macierz2D::makeMatrixIdentity()
+{
+    fillMatrixWith(0);
+    this->m_dane[0][0] = 1;
+    this->m_dane[1][1] = 1;
+    this->m_dane[2][2] = 1;
+}
+void transponseMatrix()
+{
+    //w macierzy 3x3 wystarcz¹ trzy zamiany, gdy¿ elementy na diagonali pozostan¹ takie same
+    swapElementsAt(0, 1, 1, 0);
+    swapElementsAt(2, 0, 0, 2);
+    swapElementsAt(2, 1, 1, 2);
 }
 int main()
 {
