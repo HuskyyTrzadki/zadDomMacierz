@@ -36,6 +36,10 @@ public:
     Macierz2D(float**);
     Macierz2D(float&);//adres zmiennje
     Macierz2D(int, int, int, int, int, int, int, int, int);
+    void setNumberAt(int, int, int);
+    int getNumberAt(int, int);
+
+    
     void fillMatrixWith(int);
     void setVal(int row, int col, int val); //Method to set the val of [i,j]th-entry
     void printMatrix(); //Method to display the matrix
@@ -69,20 +73,7 @@ public:
         }
 
     }
-    Macierz2D operator+(int liczba)
-    {
-        if (liczba != 0) {
-            for (int i = 0; i < nRows; i++)
-            {
-                for (int j = 0; j < nCols; j++)
-                {
-                    m_dane[i][j] = (m_dane[i][j]) + liczba;
-                }
-            }
-            return *this;
-        }
 
-    }
     Macierz2D operator*(int liczba)
     {
             for (int i = 0; i < nRows; i++)
@@ -95,6 +86,101 @@ public:
             return *this;
        
 
+    }
+    Macierz2D operator+(int liczba)
+    {
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                m_dane[i][g] = (m_dane[i][g]) * liczba;
+            }
+        }
+        return *this;
+
+
+    }
+    Matrix2D operator +(const Matrix2D m) const
+    {
+        return Matrix2D(this->data[0][0] + m.data[0][0], this->data[0][1] + m.data[0][1], this->data[0][2] + m.data[0][2],
+            this->data[1][0] + m.data[1][0], this->data[1][1] + m.data[1][1], this->data[1][2] + m.data[1][2],
+            this->data[2][0] + m.data[2][0], this->data[2][1] + m.data[2][1], this->data[2][2] + m.data[2][2]);
+    }
+    Macierz2D operator+=(Macierz2D& x) {
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                m_dane[i][g] += x.m_dane[i][g];
+            }
+        }
+        return *this;
+    }
+    Macierz2D operator-=(Macierz2D& x) {
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                m_dane[i][g] -= x.m_dane[i][g];
+            }
+        }
+        return *this;
+    }
+
+    Macierz2D operator++(int) //post
+    {
+        Macierz2D przed = *this;
+
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                m_dane[i][g] += 1;
+            }
+        }
+
+        return przed;
+    }
+    Macierz2D operator--(int)
+    {
+        Macierz2D przed = *this;
+
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int j = 0; j < nCols; j++)
+            {
+                m_dane[i][j] -= 1;
+            }
+        }
+
+        return przed;
+    }
+    Macierz2D operator++() //post
+    {
+
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                m_dane[i][g] += 1;
+            }
+        }
+
+        return *this;
+    }
+    Macierz2D operator--()
+    {
+        
+
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int j = 0; j < nCols; j++)
+            {
+                m_dane[i][j] -= 1;
+            }
+        }
+
+        return *this;
     }
 
 private:
@@ -169,10 +255,18 @@ void Macierz2D::printMatrix() {
     {
         for (int j = 0; j < nCols; j++)
         {
-            std::cout << m_dane[i][j]+" ";
+            std::cout << m_dane[i][j];
         }
     }
 
+}
+void Macierz2D::setNumberAt(int r, int c, float num)
+{
+    m_dane[r][c] = num;
+}
+int Macierz2D::getNumberAt(int r, int c)
+{
+    return m_dane[r][c];
 }
 void Macierz2D::fillMatrixWith(int x) {
     for (int i = 0; i < nRows; i++) {
@@ -187,6 +281,6 @@ void Macierz2D::fillMatrixWith(int x) {
 int main()
 {
     Macierz2D* x = new Macierz2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
-    *x + 4;
+    *x++;
     x->printMatrix();
 }
