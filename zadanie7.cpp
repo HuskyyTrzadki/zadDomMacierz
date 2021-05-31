@@ -28,12 +28,12 @@
 //Nale¿y zadbaæ o poprawn¹ obs³ugê obiektów klasy Macierz2D.
 #include <iostream>
 #include <initializer_list>
-
+//dzien Dobry, ¿yczê mi³ego Dnia.
 class Macierz2D {
 private:
     float** m_dane;
     int nRows = 3;
-    int nCols = 3;// The class
+    int nCols = 3;
 public:
     Macierz2D(); //Default constructor
     Macierz2D(int); //Main constructor
@@ -42,14 +42,16 @@ public:
     Macierz2D(const Macierz2D&);
     Macierz2D(float,float,float,float,float,float,float,float,float);
     Macierz2D(const std::initializer_list <float>& newData);
+    ~Macierz2D();
     void setNumberAt(int, int, float);
     int getNumberAt(int, int);
     void makeMatrixIdentity();
     float getDet();
+    void TransposeMatrix();
+    
 
     
     void fillMatrixWith(float);
-    void setVal(float row, float col, float val); //Method to set the val of [i,j]th-entry
     void printMatrix(); //Method to display the matrix
  
     Macierz2D operator/(float liczba)
@@ -309,6 +311,15 @@ Macierz2D::Macierz2D(float a, float b, float c, float d, float e, float f, float
 
 
 }
+Macierz2D::~Macierz2D() {
+        for (int i = 0; i < nRows; i++)
+        {
+           
+            
+            delete[] m_dane[i];
+        }
+        delete[] m_dane;
+}
 //lista inicjalizacyjna
 Macierz2D::Macierz2D(const std::initializer_list <float>& newData)
 {
@@ -416,16 +427,30 @@ void Macierz2D::makeMatrixIdentity()
     this->m_dane[1][1] = 1;
     this->m_dane[2][2] = 1;
 }
+void Macierz2D::TransposeMatrix()
+{
+    //zamiana jak z liczbami //0110
+    float temp = m_dane[0][1];
+    m_dane[0][1] = m_dane[1][0];
+    m_dane[1][0] = temp;
 
+    temp = m_dane[2][0];
+    m_dane[2][0] = m_dane[0][2];
+    m_dane[0][2] = temp;
+
+    temp = m_dane[2][1];
+    m_dane[2][1] = m_dane[1][2];
+    m_dane[1][2] = temp;
+}
 int main()
 {
     Macierz2D* x = new Macierz2D(1, 2, 3, 4, 5, 6, 7, 8, 9);
     Macierz2D* y = new Macierz2D(5,6,3,2,1,4,6,8,9);
     Macierz2D* z = new Macierz2D(0);
-    Macierz2D* main = new Macierz2D();
     std::cout << "przykladowe mnozenie macierzy\n";
-    *z *= *x;
+    *z=*x * *y;
     std::cout << *z;
+    //niestety niezbyt rozumiem o co chodzi z fragmentem polecenia o sortowaniu.
 
 
    
