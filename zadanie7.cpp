@@ -39,7 +39,7 @@ public:
     Macierz2D(int); //Main constructor
     Macierz2D(float**);
     Macierz2D(float&);//adres zmiennje
-    Macierz2D(Macierz2D&);
+    Macierz2D(const Macierz2D&);
     Macierz2D(float,float,float,float,float,float,float,float,float);
     Macierz2D(const std::initializer_list <float>& newData);
     void setNumberAt(int, int, float);
@@ -113,13 +113,13 @@ public:
             macierz.m_dane[1][0] + m_dane[1][0], macierz.m_dane[1][1] + m_dane[1][1], macierz.m_dane[1][2] + m_dane[1][2],
             macierz.m_dane[2][0] + m_dane[2][0], macierz.m_dane[2][1] + m_dane[2][1], macierz.m_dane[2][2] + m_dane[2][2]);
     }*/
-    Macierz2D& operator =(const Macierz2D m)
+    Macierz2D& operator =(const Macierz2D macierz)
     {
         for (int i = 0; i < nRows; i++)
         {
             for (int g = 0; g < nCols; g++)
             {
-                this->m_dane[i][g] = m.m_dane[i][g];
+                this->m_dane[i][g] = macierz.m_dane[i][g];
             }
 
 
@@ -208,19 +208,21 @@ public:
     }
     Macierz2D operator*(const Macierz2D& macierz)
     {
-        Macierz2D *res = new Macierz2D(0);
+        float res[3][3] = {0};
         for (int i = 0; i < nRows; i++)
         {
             for (int g = 0; g < nCols; g++)
             {
                 for (int k = 0; k < 3; k++)
                 {
-                    res->m_dane[i][g] += m_dane[i][k] * m_dane[k][g];
+                    res[i][g] += m_dane[i][k] * m_dane[k][g];
                 }
             }
         }
 
-        return *res;
+        return Macierz2D(res[0][0], res[0][1], res[0][2],
+            res[1][0], res[1][1], res[1][2],
+            res[2][0], res[2][1], res[2][2]);
     }
     Macierz2D& operator *=(const Macierz2D& m)
     {
@@ -422,8 +424,8 @@ int main()
     Macierz2D* z = new Macierz2D(0);
     Macierz2D* main = new Macierz2D();
     std::cout << "przykladowe mnozenie macierzy\n";
-    *z=*x * *y;
-    std::cout << *x;
+    *z *= *x;
+    std::cout << *z;
 
 
    
