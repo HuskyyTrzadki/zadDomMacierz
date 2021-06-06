@@ -229,22 +229,99 @@ public:
 
 
     //allocate the array
+    Macierz2D() {
+        //stworzylem tablice wskaznikow
+        m_dane = new typ * [nRows];
+        for (int i = 0; i < nCols; i++) {
+            m_dane[i] = new typ[nCols];
+        }
 
+        fillMatrixWith(0);
+
+    }
+    Macierz2D(typ a, typ b, typ c, typ  d, typ e, typ f, typ g, typ h, typ i) {
+        m_dane = new typ * [nRows];
+        for (int i = 0; i < nCols; i++) {
+            m_dane[i] = new typ[nCols];
+        }
+        m_dane[0][0] = a;
+        m_dane[0][1] = b;
+        m_dane[0][2] = c;
+        m_dane[1][0] = d;
+        m_dane[1][1] = e;
+        m_dane[1][2] = f;
+        m_dane[2][0] = g;
+        m_dane[2][1] = h;
+        m_dane[2][2] = i;
+
+
+
+    }
+    Macierz2D(typ a, typ b, typ c, typ  d, typ e, typ f, typ g, typ h, typ i, typ j, typ k, typ l, typ m, typ n, typ o, typ p) {
+        m_dane = new typ * [nRows];
+        for (int i = 0; i < nCols; i++) {
+            m_dane[i] = new typ[nCols];
+        }
+        m_dane[0][0] = a;
+        m_dane[0][1] = b;
+        m_dane[0][2] = c;
+        m_dane[0][3] = d;
+        m_dane[1][0] = e;
+        m_dane[1][1] = f;
+        m_dane[1][2] = g;
+        m_dane[1][3] = h;
+        m_dane[2][0] = i;
+        m_dane[2][1] = j;
+        m_dane[2][2] = k;
+        m_dane[2][3] = l;
+        m_dane[3][0] = m;
+        m_dane[3][1] = n;
+        m_dane[3][2] = o;
+        m_dane[3][3] = p;
+
+
+
+    }
+    ~Macierz2D() {
+        for (int i = 0; i < nRows; i++)
+        {
+
+            delete[] m_dane[i];
+        }
+        delete[] m_dane;
+    }
+    Macierz2D(const std::initializer_list <typ>& newData)
+    {
+        m_dane = new typ * [nRows];
+
+        for (int i = 0; i < nRows; i++)
+        {
+            m_dane[i] = new typ[nRows];
+        }
+
+        int i = 0;
+        int j = 0;
+
+        for (auto element : newData)
+        {
+            if (j == 3)
+            {
+                j = 0;
+                i++;
+            }
+
+            typ temp = element;
+
+            m_dane[i][j] = temp;
+
+            j++;
+        }
+    }
 };
 //Default constructor
-template <class typ>
-Macierz2D<typ>::Macierz2D() {
-    //stworzylem tablice wskaznikow
-    m_dane = new typ * [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new typ[nCols];
-    }
 
-    fillMatrixWith(0);
-
-}
-
-std::ostream& operator<<(std::ostream& output, const Macierz2D& macierz)
+template <typename T>
+std::ostream& operator<<(std::ostream& output, const Macierz2D<T>& macierz)
 {
 
     for (int i = 0; i < macierz.nRows; i++)
@@ -273,88 +350,11 @@ std::istream& operator>>(std::istream& input, const  Macierz2D& macierz)
 }
 //to dla mnie
 template <class typ = int>
-Macierz2D<typ>::Macierz2D(typ a, typ b, typ c, typ  d, typ e, typ f, typ g, typ h, typ i) {
-    m_dane = new typ * [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new typ[nCols];
-    }
-    m_dane[0][0] = a;
-    m_dane[0][1] = b;
-    m_dane[0][2] = c;
-    m_dane[1][0] = d;
-    m_dane[1][1] = e;
-    m_dane[1][2] = f;
-    m_dane[2][0] = g;
-    m_dane[2][1] = h;
-    m_dane[2][2] = i;
 
-
-
-}
 template <class typ = int>
-Macierz2D<typ>::Macierz2D(typ a, typ b, typ c, typ  d, typ e, typ f, typ g, typ h, typ i, typ j, typ k, typ l, typ m, typ n, typ o, typ p) {
-    m_dane = new typ * [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new typ[nCols];
-    }
-    m_dane[0][0] = a;
-    m_dane[0][1] = b;
-    m_dane[0][2] = c;
-    m_dane[0][3] = d;
-    m_dane[1][0] = e;
-    m_dane[1][1] = f;
-    m_dane[1][2] = g;
-    m_dane[1][3] = h;
-    m_dane[2][0] = i;
-    m_dane[2][1] = j;
-    m_dane[2][2] = k;
-    m_dane[2][3] = l;
-    m_dane[3][0] = m;
-    m_dane[3][1] = n;
-    m_dane[3][2] = o;
-    m_dane[3][3] = p;
 
-
-
-}
-
-Macierz2D::~Macierz2D() {
-    for (int i = 0; i < nRows; i++)
-    {
-
-        delete[] m_dane[i];
-    }
-    delete[] m_dane;
-}
 //lista inicjalizacyjna
 template<class typ = int>
-Macierz2D<typ>::Macierz2D(const std::initializer_list <typ>& newData)
-{
-    m_dane = new typ * [nRows];
-
-    for (int i = 0; i < nRows; i++)
-    {
-        m_dane[i] = new typ[nRows];
-    }
-
-    int i = 0;
-    int j = 0;
-
-    for (auto element : newData)
-    {
-        if (j == 3)
-        {
-            j = 0;
-            i++;
-        }
-
-        typ temp = element;
-
-        m_dane[i][j] = temp;
-
-        j++;
-    }
-}
 
 Macierz2D::Macierz2D(const Macierz2D& macierz)
 {
