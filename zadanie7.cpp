@@ -3,34 +3,14 @@
 #include <initializer_list>
 #include <vector>
 //dzien Dobry, ¿yczê mi³ego Dnia.
-template <class typ = int, int wymiar = 3>
+template <class typ = int, int wymiar=3>
 class Macierz2D {
 private:
     typ** m_dane;
-    wymiar nRows = wymiar;
-    wymiar nCols = wymiar;
+    int nRows = wymiar;
+    int nCols = wymiar;
 public:
-    //pierwzy to typ, drugi to rozmiar 
-    //konstrukcja templatkowa, ze nie ma kodu wczesniej i kompilator go tworzy
-    Macierz2D(); //Default constructor
-    Macierz2D(typ); //Main constructor
-    Macierz2D(typ**);
-    Macierz2D(typ&);//adres zmiennje
-    Macierz2D(const Macierz2D&);
-    Macierz2D(typ, typ, typ, typ, typ, typ, typ, typ, typ);
-    Macierz2D(typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ, typ);
-    Macierz2D(const std::initializer_list <float>& newData);
-    ~Macierz2D();
-    void setNumberAt(int, int, typ);
-    int getNumberAt(int, int);
-    void makeMatrixIdentity();
-    float getDet();
-    void TransposeMatrix();
-
-
-
-    void fillMatrixWith(typ);
-    void printMatrix(); //Method to display the matrix
+ 
 
     Macierz2D operator/(typ liczba)
     {
@@ -188,7 +168,7 @@ public:
     }
     Macierz2D operator*(const Macierz2D& macierz)
     {
-        float res[nRows][y] = { 0 };
+        typ res[wymiar][wymiar] = { 0 };
         for (int i = 0; i < nRows; i++)
         {
             for (int g = 0; g < nCols; g++)
@@ -317,11 +297,124 @@ public:
             j++;
         }
     }
+    Macierz2D(const Macierz2D& macierz)
+    {
+        Macierz2D* nowa = new Macierz2D(0);
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int g = 0; g < nCols; g++)
+            {
+                nowa->m_dane[i][g] = macierz.m_dane[i][g];
+            }
+        }
+    }
+    float getDet() {
+        typ det;
+        if (nRows == 3) {
+            det = m_dane[0][2] * m_dane[1][1] * m_dane[2][0] + m_dane[0][0] * m_dane[1][2] * m_dane[2][1] + m_dane[0][1] * m_dane[1][0] * m_dane[2][2];
+        }
+        if (nRows == 4) {
+            int det = 0;
+            int submatrix[10][10];
+            if (nRows == 2)
+                return ((m_dane[0][0] * m_dane[1][1]) - (m_dane[1][0] * m_dane[0][1]));
+            else {
+                for (int x = 0; x < 4; x++) {
+                    int subi = 0;
+                    for (int i = 1; i < 4; i++) {
+                        int subj = 0;
+                        for (int j = 0; j < 4; j++) {
+                            if (j == x)
+                                continue;
+                            submatrix[subi][subj] = m_dane[i][j];
+                            subj++;
+                        }
+                        subi++;
+                    }
+                    det = det + (pow(-1, x) * m_dane[0][x] * getDet(submatrix, nRows - 1));
+                }
+            }
+            return det;
+        }
+
+        return det;
+    }
+    Macierz2D(typ param)
+    {
+        m_dane = new typ * [nRows];
+        for (int i = 0; i < nCols; i++) {
+            m_dane[i] = new typ[nCols];
+        }
+
+        fillMatrixWith(param);
+    }
+    Macierz2D(int** param)
+    {
+        m_dane = new typ * [nRows];
+        for (int i = 0; i < nCols; i++) {
+            m_dane[i] = new typ[nCols];
+        }
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int j = 0; j < nCols; j++)
+            {
+                m_dane[i][j] = param[i][j];
+            }
+        }
+
+    }
+    typ setNumberAt(int r, int c, typ num)
+    {
+        m_dane[r][c] = num;
+    }
+    typ getNumberAt(int r, int c)
+    {
+        return m_dane[r][c];
+    }
+    void printMatrix() {
+        for (int i = 0; i < nRows; i++)
+        {
+            for (int j = 0; j < nCols; j++)
+            {
+                std::cout << m_dane[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+
+    }
+    void fillMatrixWith(typ x) {
+        for (int i = 0; i < nRows; i++) {
+            for (int w = 0; w < nCols; w++) {
+                m_dane[i][w] = x;
+
+            }
+
+        }
+    }
+   void makeMatrixIdentity()
+    {
+        fillMatrixWith(0);
+        this->m_dane[0][0] = 1;
+        this->m_dane[1][1] = 1;
+        this->m_dane[2][2] = 1;
+    }
+   void TransposeMatrix()
+   {
+       for (int i = 0; i < nCols; i++) {
+           for (int j = 0; j < nRows; j++) {
+               if (m_dane[i] > m_dane[j]) {
+                   int temp;
+                   temp = m_dane[i][j];
+                   m_dane[i][j] = m_dane[j][i];
+                   m_dane[j][i] = temp;
+               }
+           }
+       }
+   }
 };
 //Default constructor
 
-template <typename T>
-std::ostream& operator<<(std::ostream& output, const Macierz2D<T>& macierz)
+std::ostream& operator<<(std::ostream& output, const Macierz2D<double> &macierz)
 {
 
     for (int i = 0; i < macierz.nRows; i++)
@@ -335,7 +428,8 @@ std::ostream& operator<<(std::ostream& output, const Macierz2D<T>& macierz)
 
     return output;
 }
-std::istream& operator>>(std::istream& input, const  Macierz2D& macierz)
+template <typename T, int wymiar >
+std::istream& operator>>(std::istream& input, const  Macierz2D<T,wymiar>& macierz)
 {
     for (int i = 0; i < macierz.nRows; i++)
     {
@@ -349,143 +443,15 @@ std::istream& operator>>(std::istream& input, const  Macierz2D& macierz)
     return input;
 }
 //to dla mnie
-template <class typ = int>
 
-template <class typ = int>
-
-//lista inicjalizacyjna
-template<class typ = int>
-
-Macierz2D::Macierz2D(const Macierz2D& macierz)
-{
-    Macierz2D* nowa = new Macierz2D(0);
-    for (int i = 0; i < nRows; i++)
-    {
-        for (int g = 0; g < nCols; g++)
-        {
-            nowa->m_dane[i][g] = macierz.m_dane[i][g];
-        }
-    }
-}
-template<class typ = int>
-Macierz2D<typ>::Macierz2D(typ param)
-{
-    m_dane = new typ * [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new typ[nCols];
-    }
-
-    fillMatrixWith(param);
-}
-template<class typ = int>
-Macierz2D<typ>::Macierz2D(typ** param)
-{
-    m_dane = new typ * [nRows];
-    for (int i = 0; i < nCols; i++) {
-        m_dane[i] = new typ[nCols];
-    }
-    for (int i = 0; i < nRows; i++)
-    {
-        for (int j = 0; j < nCols; j++)
-        {
-            m_dane[i][j] = param[i][j];
-        }
-    }
-
-
-}
-//template class cpp
-template<class typ = int>
-Macierz2D<typ>::getDet() {
-    typ det;
-    if (nRows == 3) {
-        det = m_dane[0][2] * m_dane[1][1] * m_dane[2][0] + m_dane[0][0] * m_dane[1][2] * m_dane[2][1] + m_dane[0][1] * m_dane[1][0] * m_dane[2][2];
-    }
-    if (nRows == 4) {
-        int det = 0;
-        int submatrix[10][10];
-        if (n == 2)
-            return ((matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]));
-        else {
-            for (int x = 0; x < 4; x++) {
-                int subi = 0;
-                for (int i = 1; i < 4; i++) {
-                    int subj = 0;
-                    for (int j = 0; j < 4; j++) {
-                        if (j == x)
-                            continue;
-                        submatrix[subi][subj] = matrix[i][j];
-                        subj++;
-                    }
-                    subi++;
-                }
-                det = det + (pow(-1, x) * matrix[0][x] * determinant(submatrix, n - 1));
-            }
-        }
-        return det;
-    }
-
-    return det;
-}
-void Macierz2D::printMatrix() {
-    for (int i = 0; i < nRows; i++)
-    {
-        for (int j = 0; j < nCols; j++)
-        {
-            std::cout << m_dane[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-
-}
-
-void Macierz2D::setNumberAt(int r, int c, typ num)
-{
-    m_dane[r][c] = num;
-}
-int Macierz2D::getNumberAt(int r, int c)
-{
-    return m_dane[r][c];
-}
-template<class typ = int>
-void Macierz2D<typ>::fillMatrixWith(typ x) {
-    for (int i = 0; i < nRows; i++) {
-        for (int w = 0; w < nCols; w++) {
-            m_dane[i][w] = x;
-
-        }
-
-    }
-
-}
-void Macierz2D::makeMatrixIdentity()
-{
-    fillMatrixWith(0);
-    this->m_dane[0][0] = 1;
-    this->m_dane[1][1] = 1;
-    this->m_dane[2][2] = 1;
-}
-void Macierz2D::TransposeMatrix()
-{
-    for (int i = 0; i < nCols; i++) {
-        for (int j = 0; j < NRows; j++) {
-            if (m_dane[i] > m_dane[j]) {
-                int temp;
-                temp = m_dane[i][j];
-                m_dane[i][j] = m_dane[j][i];
-                m_dane[j][i] = temp;
-            }
-        }
-    }
-}
 int main()
-{
-    Macierz2D* x = new<int> Macierz2D(5, 3, 1, 4, 2, 5, 4, 6, 2, 2, 5, 4, 7, 7, 5, 3);
-    Macierz2D* y = new<float> Macierz2D(5, 3, 1.3, 8.8, 7, 3.4, 2.1, 6.5, 2.2, 2, 1.8, 4, 1, 7, 5, 3);
-    Macierz2D* z = new<float> Macierz2D(0);
+{   
+    Macierz2D<double,4>* x = new Macierz2D<double,4>(5, 3, 1, 4, 2, 5, 4, 6, 2, 2, 5, 4, 7, 7, 5, 3);
+    Macierz2D<double,4>* y = new Macierz2D<double,4>(5, 3, 1, 4, 2, 5, 4, 6, 2, 2, 5, 4, 7, 7, 5, 3);
+    Macierz2D<double,4>* z = new Macierz2D<double,4>((double)0);
     std::cout << "przykladowe mnozenie macierzy\n";
     *z = *x * *y;
-    std::cout << *z;
+    std::cout << *x;
     //niestety niezbyt rozumiem o co chodzi z fragmentem polecenia o sortowaniu.
 
 
